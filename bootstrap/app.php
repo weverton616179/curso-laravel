@@ -10,9 +10,14 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        //
+    ->withMiddleware(function (Illuminate\Foundation\Configuration\Middleware $middleware) {
+    // Substitui o middleware padrão 'auth' pelo seu
+    $middleware->alias([
+            'auth' => \App\Http\Middleware\CustomAuthenticate::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+    

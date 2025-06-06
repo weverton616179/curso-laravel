@@ -18,4 +18,9 @@ class Produto extends Model
     public function categoria() {
         return $this->belongsTo(Categoria::class,'id_categoria');
     }
+
+    public static function retornaImg(int $id) {
+        $produto = Produto::where('id', $id)->first();
+        return $produto->imagem;
+    }
 }
