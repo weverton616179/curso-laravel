@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 use App\Models\Produto;
+
+use illuminate\Support\Str;
 
 class ProdutoController extends Controller
 {
@@ -12,13 +15,12 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        //return "index";
+        $produtos = Produto::paginate(5);
+        $categorias = Categoria::all();
+        return view("admin.produtos", compact("produtos", 'categorias'));
 
-        // $produtos = Produto::all();
-        // return dd($produtos);
-        $produtos = Produto::paginate(6);
-
-        return view('site.home', compact('produtos'));
+        // $produtos = Produto::paginate(6);
+        // return view('site.home', compact('produtos'));
     }
 
     /**
@@ -34,7 +36,17 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $produto = $request->all();
+
+        if($request->imagem){
+            // $produto['imagem'] = $request->imagem->store('produtos');
+        }
+
+        $produto['slug'] = Str::slug($request->nome);
+
+        $produto = Produto::create($produto);
+
+        return redirect()->route('admin.produtos')->with('sucesso', 'produto cadastrado');
     }
 
     /**
@@ -64,8 +76,10 @@ class ProdutoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $produto = Produto::find($id);
+        $produto->delete();
+        return redirect()->route('admin.produtos')->with('sucesso','produto removido');
     }
 }
